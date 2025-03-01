@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35818.85 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoMacro", "EchoMacro\EchoMacro.csproj", "{479A5DA9-E33B-48A2-8459-2064E14FF87C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{479A5DA9-E33B-48A2-8459-2064E14FF87C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{479A5DA9-E33B-48A2-8459-2064E14FF87C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{479A5DA9-E33B-48A2-8459-2064E14FF87C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{479A5DA9-E33B-48A2-8459-2064E14FF87C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {608259F3-7C2D-4B7C-A47D-23E6FD93E9DE}
+	EndGlobalSection
+EndGlobal
