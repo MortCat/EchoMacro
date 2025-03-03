@@ -13,8 +13,26 @@ namespace EchoMacro;
 
 public partial class MainWindow : Window
 {
+    private Recorder recorder = new Recorder();
+    private Player player = new Player();
     public MainWindow()
     {
         InitializeComponent();
+    }
+    private void BtnStart_Click(object sender, RoutedEventArgs e)
+    {
+        recorder.StartRecording();
+    }
+
+    private void BtnStop_Click(object sender, RoutedEventArgs e)
+    {
+        recorder.StopRecording();
+    }
+
+    private async void BtnPlay_Click(object sender, RoutedEventArgs e)
+    {
+        int delay = int.TryParse(txtDelay.Text, out var d) ? d : 0;
+        bool repeat = chkRepeat.IsChecked ?? false;
+        await player.PlayActions(recorder.GetRecordedActions(), delay, repeat);
     }
 }
