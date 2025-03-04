@@ -18,7 +18,14 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        this.KeyDown += (sender, e) => {
+            if (e.Key == Key.Escape) 
+                this.Close();
+        };
     }
+
+
+
     private void BtnStart_Click(object sender, RoutedEventArgs e)
     {
         recorder.StartRecording();
@@ -34,5 +41,10 @@ public partial class MainWindow : Window
         int delay = int.TryParse(txtDelay.Text, out var d) ? d : 0;
         bool repeat = chkRepeat.IsChecked ?? false;
         await player.PlayActions(recorder.GetRecordedActions(), delay, repeat);
+    }
+    private void MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ButtonState == MouseButtonState.Pressed)
+            DragMove();
     }
 }
