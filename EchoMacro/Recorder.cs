@@ -60,15 +60,8 @@ public class Recorder
     {
        if (!isRecording) return;
 
+        Keys a = e.KeyCode;
         string keyName = e.KeyCode.ToString();
-
-        if (e.Control) 
-            keyName = "Ctrl+" + keyName;
-        if (e.Shift) 
-            keyName = "Shift+" + keyName;
-        if (e.Alt) 
-            keyName = "Alt+" + keyName;
-
         recordedActions.Add(new RecordedAction
         {
             Type = InputType.KeyPress,

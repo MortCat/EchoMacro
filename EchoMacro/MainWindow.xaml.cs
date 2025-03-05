@@ -1,13 +1,5 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace EchoMacro;
 
@@ -38,7 +30,7 @@ public partial class MainWindow : Window
 
     private async void BtnPlay_Click(object sender, RoutedEventArgs e)
     {
-        int delay = int.TryParse(txtDelay.Text, out var d) ? d : 0;
+        int delay = int.TryParse(txtDelay.Text, out var sec) ? sec : 0;
         bool repeat = chkRepeat.IsChecked ?? false;
         await player.PlayActions(recorder.GetRecordedActions(), delay, repeat);
     }
