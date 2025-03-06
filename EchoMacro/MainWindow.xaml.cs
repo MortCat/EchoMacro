@@ -39,4 +39,9 @@ public partial class MainWindow : Window
         if (e.ButtonState == MouseButtonState.Pressed)
             DragMove();
     }
+    private void Border_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        Point position = e.GetPosition(this);
+        TreeViewMenu.Show(position);
+    }
 }
