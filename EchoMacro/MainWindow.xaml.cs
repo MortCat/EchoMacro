@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using EchoMacro.Service;
+using EchoMacro.View;
+using System.Windows;
 using System.Windows.Input;
 
 namespace EchoMacro;
@@ -7,13 +9,22 @@ public partial class MainWindow : Window
 {
     private Recorder recorder = new Recorder();
     private Player player = new Player();
+    private FileTreeView_UserControl treeView = new FileTreeView_UserControl();
     public MainWindow()
     {
         InitializeComponent();
+        Process();
+    }
+    private void Process()
+    {
         this.KeyDown += (sender, e) => {
-            if (e.Key == Key.Escape) 
+            if (e.Key == Key.Escape)
                 this.Close();
         };
+
+        treeView.OnLoadRecord += HandleLoadRecord;
+        treeView.OnSaveRecord += HandleSaveRecord;
+        treeView.OnCloseApp += HandleCloseApp;
     }
 
 
@@ -43,5 +54,24 @@ public partial class MainWindow : Window
     {
         Point position = e.GetPosition(this);
         TreeViewMenu.Show(position);
+    }
+
+
+    private void HandleLoadRecord(RecordedAction recorder)
+    {
+
+    }
+
+    private void HandleSaveRecord(RecordedAction recorder)
+    {
+        if (FileManager.SaveAsRecord(recorder))
+        {
+
+        }
+    }
+
+    private void HandleCloseApp()
+    {
+        Application.Current.Shutdown();
     }
 }
