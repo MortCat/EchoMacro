@@ -2,6 +2,9 @@
 using EchoMacro.View;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
+using System.Text.Json;
+using System.IO;
 
 namespace EchoMacro;
 
@@ -9,7 +12,7 @@ public partial class MainWindow : Window
 {
     private Recorder recorder = new Recorder();
     private Player player = new Player();
-    private FileTreeView_UserControl treeView = new FileTreeView_UserControl();
+
     public MainWindow()
     {
         InitializeComponent();
@@ -22,9 +25,9 @@ public partial class MainWindow : Window
                 this.Close();
         };
 
-        treeView.OnLoadRecord += HandleLoadRecord;
-        treeView.OnSaveRecord += HandleSaveRecord;
-        treeView.OnCloseApp += HandleCloseApp;
+        TreeViewMenu.OnLoadRecord += HandleLoadRecord;
+        TreeViewMenu.OnSaveAsRecord += HandleSaveRecord;
+        TreeViewMenu.OnCloseApp += HandleCloseApp;
     }
 
 
@@ -62,16 +65,24 @@ public partial class MainWindow : Window
 
     }
 
-    private void HandleSaveRecord(RecordedAction recorder)
+    private void HandleSaveRecord()
     {
-        if (FileManager.SaveAsRecord(recorder))
+        SaveFileDialog saveFileDialog = new SaveFileDialog
         {
+            Title = "Save As",
+            Filter = "JSON Files (*.json)|*.json",
+            DefaultExt = "json",
+            FileName = "RecordedActions.json"
+        };
 
+        if (saveFileDialog.ShowDialog() == true)
+        {
+            string filePath = saveFileDialog.FileName;
+            string jsonString = JsonSerializer.Serialize(recorder.recordedActions, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(filePath, jsonString);
+            MessageBox.Show($"File has been successfully saved to {filePath}", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 
-    private void HandleCloseApp()
-    {
-        Application.Current.Shutdown();
-    }
+    private void HandleCloseApp() => this.Close();
 }

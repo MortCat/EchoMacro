@@ -19,26 +19,12 @@ namespace EchoMacro.View
     public partial class FileTreeView_UserControl : UserControl
     {
         public event Action<RecordedAction> OnLoadRecord;
-        public event Action<RecordedAction> OnSaveRecord;
+        public event Action OnSaveAsRecord;
         public event Action OnCloseApp;
         public FileTreeView_UserControl()
         {
             InitializeComponent();
         }
-        //public void Show(Point position)
-        //{
-        //    TreePopup.HorizontalOffset = position.X - 3;
-        //    TreePopup.VerticalOffset = position.Y - 3;
-        //    TreePopup.IsOpen = true;
-        //}
-        //private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        //{
-        //    if (e.NewValue is TreeViewItem item)
-        //    {
-        //        MessageBox.Show($"You selected: {item.Header}");
-        //        TreePopup.IsOpen = false;
-        //    }
-        //}
         public void Show(Point position)
         {
             if (this.ContextMenu != null)
@@ -63,8 +49,7 @@ namespace EchoMacro.View
         /// </summary>
         private void SaveAsRecord_Click(object sender, RoutedEventArgs e)
         {
-            RecordedAction recorder = null;
-            OnSaveRecord?.Invoke(recorder);
+            OnSaveAsRecord?.Invoke();
         }
 
         /// <summary>
@@ -72,7 +57,8 @@ namespace EchoMacro.View
         /// </summary>
         private void SaveRecord_Click(object sender, RoutedEventArgs e)
         {
-            FileManager.SaveRecord("Your record content here...");
+            RecordedAction recorder = null;
+            FileManager.SaveRecord(recorder);
         }
 
         /// <summary>
