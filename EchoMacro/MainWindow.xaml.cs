@@ -60,9 +60,39 @@ public partial class MainWindow : Window
     }
 
 
-    private void HandleLoadRecord(RecordedAction recorder)
+    private void HandleLoadRecord()
     {
+        OpenFileDialog openFileDialog = new OpenFileDialog
+        {
+            Title = "Open JSON File",
+            Filter = "JSON Files (*.json)|*.json",
+            DefaultExt = "json"
+        };
 
+        if (openFileDialog.ShowDialog() == true)
+        {
+            string filePath = openFileDialog.FileName;
+
+            try
+            {
+                string jsonString = File.ReadAllText(filePath);
+                List<RecordedAction>? loadedActions = JsonSerializer.Deserialize<List<RecordedAction>>(jsonString);
+
+                if (loadedActions != null)
+                {
+                    recorder.SetRecordedActions(loadedActions);
+                    MessageBox.Show("File loaded successfully!", "Load Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Failed to parse the file.", "Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while loading the file:\n{ex.Message}", "Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 
     private void HandleSaveRecord()
@@ -78,7 +108,7 @@ public partial class MainWindow : Window
         if (saveFileDialog.ShowDialog() == true)
         {
             string filePath = saveFileDialog.FileName;
-            string jsonString = JsonSerializer.Serialize(recorder.recordedActions, new JsonSerializerOptions { WriteIndented = true });
+            string jsonString = JsonSerializer.Serialize(recorder.GetRecordedActions(), new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(filePath, jsonString);
             MessageBox.Show($"File has been successfully saved to {filePath}", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
         }

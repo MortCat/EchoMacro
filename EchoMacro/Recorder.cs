@@ -7,7 +7,7 @@ using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 public class Recorder
 {
     private IKeyboardMouseEvents globalHook;
-    public List<RecordedAction> recordedActions { get; private set; } = new List<RecordedAction>();
+    private List<RecordedAction> recordedActions = new List<RecordedAction>();
     private Stopwatch stopwatch;
     private bool isRecording;
 
@@ -69,7 +69,6 @@ public class Recorder
             Key = keyName
         });
     }
-
-
     public List<RecordedAction> GetRecordedActions() => new List<RecordedAction>(recordedActions);
+    public void SetRecordedActions(List<RecordedAction> records) => recordedActions = records;
 }

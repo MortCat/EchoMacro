@@ -18,7 +18,7 @@ namespace EchoMacro.View
 {
     public partial class FileTreeView_UserControl : UserControl
     {
-        public event Action<RecordedAction> OnLoadRecord;
+        public event Action OnLoadRecord;
         public event Action OnSaveAsRecord;
         public event Action OnCloseApp;
         public FileTreeView_UserControl()
@@ -35,30 +35,12 @@ namespace EchoMacro.View
         }
 
 
-        private void LoadRecord_Click(object sender, RoutedEventArgs e)
-        {
-            RecordedAction recorder = null; //= FileManager.LoadRecord();
-            if (recorder != null)
-            {
-                OnLoadRecord?.Invoke(recorder);
-            }
-        }
+        private void LoadRecord_Click(object sender, RoutedEventArgs e) => OnLoadRecord?.Invoke();
+        private void SaveAsRecord_Click(object sender, RoutedEventArgs e) => OnSaveAsRecord?.Invoke();
 
-        /// <summary>
-        /// 點擊「Save As Record」- 讓使用者選擇存檔位置
-        /// </summary>
-        private void SaveAsRecord_Click(object sender, RoutedEventArgs e)
-        {
-            OnSaveAsRecord?.Invoke();
-        }
-
-        /// <summary>
-        /// 點擊「Save Record」- 直接儲存
-        /// </summary>
         private void SaveRecord_Click(object sender, RoutedEventArgs e)
         {
-            RecordedAction recorder = null;
-            FileManager.SaveRecord(recorder);
+            //FileManager.SaveRecord();
         }
 
         /// <summary>
