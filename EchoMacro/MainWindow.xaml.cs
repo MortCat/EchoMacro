@@ -26,7 +26,8 @@ public partial class MainWindow : Window
         };
 
         TreeViewMenu.OnLoadRecord += HandleLoadRecord;
-        TreeViewMenu.OnSaveAsRecord += HandleSaveRecord;
+        TreeViewMenu.OnSaveAsRecord += HandleSaveAsRecord;
+        TreeViewMenu.OnSaveRecord += HandleSaveRecord;
         TreeViewMenu.OnCloseApp += HandleCloseApp;
     }
 
@@ -35,11 +36,16 @@ public partial class MainWindow : Window
     private void BtnStart_Click(object sender, RoutedEventArgs e)
     {
         recorder.StartRecording();
+        TreeViewMenu.SaveRecord.IsEnabled = false;
+        btnStart.IsEnabled = false;
+        btnStop.IsEnabled = true;
     }
 
     private void BtnStop_Click(object sender, RoutedEventArgs e)
     {
         recorder.StopRecording();
+        btnStart.IsEnabled = true;
+        btnStop.IsEnabled = false;
     }
 
     private async void BtnPlay_Click(object sender, RoutedEventArgs e)
@@ -80,13 +86,14 @@ public partial class MainWindow : Window
 
                 if (loadedActions != null)
                 {
-                    recorder.SetRecordedActions(loadedActions);
+                    recorder.SetRecorder(openFileDialog.SafeFileName, loadedActions);
                     MessageBox.Show("File loaded successfully!", "Load Successful", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
                     MessageBox.Show("Failed to parse the file.", "Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+                TreeViewMenu.SaveRecord.IsEnabled = true;
             }
             catch (Exception ex)
             {
@@ -95,7 +102,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void HandleSaveRecord()
+    private void HandleSaveAsRecord()
     {
         SaveFileDialog saveFileDialog = new SaveFileDialog
         {
@@ -112,6 +119,17 @@ public partial class MainWindow : Window
             File.WriteAllText(filePath, jsonString);
             MessageBox.Show($"File has been successfully saved to {filePath}", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+    }
+    private void HandleSaveRecord()
+    {
+        if (recorder.GetRecordedActions().Count == 0)
+        {
+            MessageBox.Show("No recorded actions to save.", "Save Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+        string jsonString = JsonSerializer.Serialize(recorder.GetRecordedActions(), new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(recorder.Name, jsonString);
+        MessageBox.Show($"File has been successfully saved to {recorder.Name}.json", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void HandleCloseApp() => this.Close();

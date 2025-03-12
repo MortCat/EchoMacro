@@ -98,7 +98,7 @@ public class Player
         int startY = Cursor.Position.Y;
 
         //Add steps to make the movement smoother.
-        int steps = 50;
+        int steps = 150;
         Random rand = new Random();
 
         for (int i = 1; i <= steps; i++)

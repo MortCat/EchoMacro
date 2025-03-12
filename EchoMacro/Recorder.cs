@@ -3,9 +3,11 @@ using Gma.System.MouseKeyHook;
 using System.Windows.Forms;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using System.Xml.Linq;
 
 public class Recorder
 {
+    public string Name { get; set; }
     private IKeyboardMouseEvents globalHook;
     private List<RecordedAction> recordedActions = new List<RecordedAction>();
     private Stopwatch stopwatch;
@@ -19,15 +21,18 @@ public class Recorder
     public void StartRecording()
     {
         if (isRecording) return;
-
+        Init();
+    }
+    private void Init()
+    {
         recordedActions.Clear();
         stopwatch.Restart();
         isRecording = true;
+        Name = "Recorded" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
         globalHook = Hook.GlobalEvents();
         globalHook.MouseDown += OnMouseDown;
         globalHook.KeyDown += OnKeyDown;
-
     }
 
     public void StopRecording()
@@ -70,5 +75,9 @@ public class Recorder
         });
     }
     public List<RecordedAction> GetRecordedActions() => new List<RecordedAction>(recordedActions);
-    public void SetRecordedActions(List<RecordedAction> records) => recordedActions = records;
+    public void SetRecorder(string recorderName, List<RecordedAction> records)
+    {
+        Name = recorderName;
+        recordedActions = records;
+    }
 }

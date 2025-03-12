@@ -20,6 +20,7 @@ namespace EchoMacro.View
     {
         public event Action OnLoadRecord;
         public event Action OnSaveAsRecord;
+        public event Action OnSaveRecord;
         public event Action OnCloseApp;
         public FileTreeView_UserControl()
         {
@@ -33,22 +34,9 @@ namespace EchoMacro.View
                 this.ContextMenu.IsOpen = true;
             }
         }
-
-
         private void LoadRecord_Click(object sender, RoutedEventArgs e) => OnLoadRecord?.Invoke();
         private void SaveAsRecord_Click(object sender, RoutedEventArgs e) => OnSaveAsRecord?.Invoke();
-
-        private void SaveRecord_Click(object sender, RoutedEventArgs e)
-        {
-            //FileManager.SaveRecord();
-        }
-
-        /// <summary>
-        /// 點擊「Close」- 觸發事件
-        /// </summary>
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            OnCloseApp?.Invoke(); // 交給 MainWindow 處理關閉
-        }
+        private void SaveRecord_Click(object sender, RoutedEventArgs e) => OnSaveRecord?.Invoke();
+        private void Close_Click(object sender, RoutedEventArgs e) => OnCloseApp?.Invoke();
     }
 }
