@@ -6,15 +6,15 @@ using static EchoMacro.Library.VirtualKey;
 
 public class Player
 {
-    private InputSimulator simulator;
-    private bool isPlaying;
-    private CancellationTokenSource cts;
-    private IKeyboardMouseEvents globalHook;
-    private readonly Dictionary<string, VirtualKeyCode> virtualKeyMap = GetVirtualKeyMap();
+    private readonly InputSimulator _simulator;
+    private readonly bool _isPlaying;
+    private readonly CancellationTokenSource _cts;
+    private readonly IKeyboardMouseEvents _globalHook;
+    private readonly Dictionary<string, VirtualKeyCode> _virtualKeyMap = GetVirtualKeyMap();
 
     public Player()
     {
-        simulator = new InputSimulator();
+        _simulator = new InputSimulator();
     }
 
     public async Task PlayActions(List<RecordedAction> actions, int delay = 0, bool repeat = false)
@@ -69,25 +69,25 @@ public class Player
         Thread.Sleep(5);
         if (act.IsRightClick)
         {
-            simulator.Mouse.RightButtonClick();
+            _simulator.Mouse.RightButtonClick();
         }
         else
         {
-            simulator.Mouse.LeftButtonClick();
+            _simulator.Mouse.LeftButtonClick();
         }
     }
     private void KeyPressHandler(RecordedAction act)
     {
         if (Enum.TryParse(act.Key, out VirtualKeyCode keyCode) || TryGetKeyCodeParse(act.Key, out keyCode))
         {
-            simulator.Keyboard.KeyPress(keyCode);
+            _simulator.Keyboard.KeyPress(keyCode);
         }
     }
 
     private bool TryGetKeyCodeParse(string str, out VirtualKeyCode keyCode)
     {
         keyCode = VirtualKeyCode.NONAME;
-        if (!virtualKeyMap.TryGetValue(str, out keyCode))
+        if (!_virtualKeyMap.TryGetValue(str, out keyCode))
             return false;
 
         return true;

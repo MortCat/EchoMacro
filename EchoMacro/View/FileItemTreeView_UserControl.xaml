@@ -13,6 +13,7 @@
             <MenuItem Header="💾 Save As Record" Click="SaveAsRecord_Click"/>
             <MenuItem Header="💾 Save Record" Click="SaveRecord_Click" IsEnabled="False" Name="SaveRecord"/>
             <Separator/>
+            <MenuItem Header="➖ Minimize" Click="Minimize_Click"/>
             <MenuItem Header="❌ Close" Click="Close_Click"/>
         </ContextMenu>
     </UserControl.ContextMenu>
