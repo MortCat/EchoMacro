@@ -44,6 +44,8 @@ public class Recorder
         _stopwatch.Stop();
 
         _isRecording = false;
+        if (_recordedActions.Any())
+            _recordedActions.RemoveAt(_recordedActions.Count - 1);
     }
 
     private void OnMouseDown(object sender, MouseEventArgs e)

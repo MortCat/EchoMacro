@@ -1,11 +1,23 @@
 ﻿using EchoMacro.Service;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 
 namespace EchoMacro;
 
-public partial class MainWindow : Window
+public partial class MainWindow : Window, INotifyPropertyChanged
 {
+    private bool _isRecording;
+    public bool IsRecording
+    {
+        get => _isRecording;
+        set
+        {
+            _isRecording = value;
+            OnPropertyChanged();
+        }
+    }
     private Recorder _recorder = new Recorder();
     private Player _player = new Player();
     private TreeViewController? _fileHandler;
@@ -33,21 +45,19 @@ public partial class MainWindow : Window
     }
 
 
-    private void BtnStart_Click(object sender, RoutedEventArgs e)
+    private void ToggleRecording(object sender, RoutedEventArgs e)
     {
-        _recorder.StartRecording();
-        TreeViewMenu.SaveRecord.IsEnabled = false;
-        btnStart.IsEnabled = false;
-        btnStop.IsEnabled = true;
+        if (!IsRecording)
+        {
+            _recorder.StartRecording();
+            TreeViewMenu.SaveRecord.IsEnabled = false;
+        }
+        else
+        {
+            _recorder.StopRecording();
+        }
+        IsRecording = !IsRecording;
     }
-
-    private void BtnStop_Click(object sender, RoutedEventArgs e)
-    {
-        _recorder.StopRecording();
-        btnStart.IsEnabled = true;
-        btnStop.IsEnabled = false;
-    }
-
     private async void BtnPlay_Click(object sender, RoutedEventArgs e)
     {
         int delay = int.TryParse(txtDelay.Text, out var sec) ? sec : 0;
@@ -63,5 +73,11 @@ public partial class MainWindow : Window
     {
         Point position = e.GetPosition(this);
         TreeViewMenu.Show(position);
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

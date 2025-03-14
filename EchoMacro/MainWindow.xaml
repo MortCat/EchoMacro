@@ -12,23 +12,31 @@
     <Border Background="White" CornerRadius="15" Padding="0" BorderBrush="#DDD" BorderThickness="1" Grid.ColumnSpan="2" ClipToBounds="True" Margin="0,0,0,24" MouseLeftButtonDown="MouseLeftButtonDown" MouseRightButtonDown="Border_MouseRightButtonDown">
         <Grid Margin="0,-1,0,0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"> 
-                <Button x:Name="btnStart" Content="🔴 Start" Width="60" Height="35" Click="BtnStart_Click"
+                <Button x:Name="btnStart" Width="65" Height="35" Click="ToggleRecording"
+                Background="Gray" Foreground="White" FontSize="14" FontWeight="Bold"
+                BorderBrush="Transparent" Cursor="Hand"
+                DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="🔴 Start"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsRecording}" Value="True">
+                                    <Setter Property="Content" Value="⏹ Stop"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button x:Name="btnPlay" Content="▶ Play" Width="65" Height="35" Click="BtnPlay_Click"
                 Background="Gray" Foreground="White" FontSize="14" FontWeight="Bold"
                 BorderBrush="Transparent" Cursor="Hand" Margin="0,0,0,0"/>
 
-                <Button x:Name="btnStop" Content="⏹ End" Width="60" Height="35" Click="BtnStop_Click"
-                Background="Gray" Foreground="White" FontSize="14" FontWeight="Bold"
-                BorderBrush="Transparent" Cursor="Hand" Margin="0,0,0,0" IsEnabled="False"/>
-
-                <Button x:Name="btnPlay" Content="▶ Play" Width="60" Height="35" Click="BtnPlay_Click"
-                Background="Gray" Foreground="White" FontSize="14" FontWeight="Bold"
-                BorderBrush="Transparent" Cursor="Hand" Margin="0,0,0,0"/>
-
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="3,0,0,0">
-                    <CheckBox x:Name="chkRepeat" Content="Repeat" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="Delay(ms):" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBox x:Name="txtDelay" Width="30" Height="25" Text="0" FontSize="12" Padding="5"
-                     Background="White" BorderBrush="Gray" BorderThickness="1" TextAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0">
+                    <CheckBox x:Name="chkRepeat" Content="Repeat" FontSize="14" VerticalAlignment="Center"/>
+                    <TextBlock Text="Delay (ms):" FontSize="14" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                    <TextBox x:Name="txtDelay" Width="40" Height="25" Text="0" FontSize="12" Padding="3"
+                             Background="White" BorderBrush="Gray" BorderThickness="1" TextAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
 
