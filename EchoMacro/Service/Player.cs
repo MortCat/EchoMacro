@@ -6,10 +6,9 @@ using static EchoMacro.Library.VirtualKey;
 
 public class Player
 {
+    private bool _isPlaying { get; set; } = false;
+
     private readonly InputSimulator _simulator;
-    private readonly bool _isPlaying;
-    private readonly CancellationTokenSource _cts;
-    private readonly IKeyboardMouseEvents _globalHook;
     private readonly Dictionary<string, VirtualKeyCode> _virtualKeyMap = GetVirtualKeyMap();
 
     public Player()
@@ -30,6 +29,7 @@ public class Player
             //Take the first action as the base time.
             double baseTime = actions[0].Timestamp;
             double previousTime = baseTime;
+            _isPlaying = true;
 
             foreach (var action in actions)
             {
@@ -40,6 +40,9 @@ public class Player
                 if (delay > 0)
                     await Task.Delay(delay);
 
+                if (!_isPlaying)
+                    return;
+
                 ExecuteAction(action);
 
                 previousTime = action.Timestamp;
@@ -47,6 +50,7 @@ public class Player
 
         } while (repeat);
     }
+    public void StopPlayback() => _isPlaying = false;
 
     private void ExecuteAction(RecordedAction action)
     {

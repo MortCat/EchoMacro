@@ -30,11 +30,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void Process()
     {
         EnsureWindowOnTop();
-
-        this.KeyDown += (sender, e) => {
-            if (e.Key == Key.Escape)
-                this.Close();
-        };
+        SetShortcutKeys();
         _fileHandler = new TreeViewController(TreeViewMenu, _recorder);
         _fileHandler.LoadFileSuccessfully += () => TreeViewMenu.SaveRecord.IsEnabled = true;
     }
@@ -42,6 +38,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         this.Topmost = true;
         this.Deactivated += (s, e) => this.Topmost = true;
+    }
+    private void SetShortcutKeys()
+    {
+        this.KeyDown += (sender, e) => {
+            if (e.Key == Key.Escape)
+                this.Close();
+
+            if (e.Key == Key.Space)
+                _player.StopPlayback();
+        };
     }
 
 
@@ -62,7 +68,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         int delay = int.TryParse(txtDelay.Text, out var sec) ? sec : 0;
         bool repeat = chkRepeat.IsChecked ?? false;
-        await _player.PlayActions(_recorder.GetRecordedActions(), delay, repeat);
+        List<RecordedAction> actions = _recorder.GetRecordedActions();
+        if (actions.Count == 0)
+            return;
+
+        await _player.PlayActions(actions, delay, repeat);
     }
     private void MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {

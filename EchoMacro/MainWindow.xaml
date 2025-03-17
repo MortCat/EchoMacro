@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="clr-namespace:EchoMacro.View"
         
-        Title="EchoPlayer" Height="59" Width="400"
+        Title="EchoPlayer" Height="59" Width="340"
         WindowStyle="None" 
         WindowStartupLocation="CenterScreen" Background="Transparent" ResizeMode="CanResize"
         AllowsTransparency="True" >
@@ -33,7 +33,15 @@
                 BorderBrush="Transparent" Cursor="Hand" Margin="0,0,0,0"/>
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0">
-                    <CheckBox x:Name="chkRepeat" Content="Repeat" FontSize="14" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="chkRepeat" VerticalAlignment="Center" Margin="0,3,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1" Text="🔁" FontSize="16" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                        </Grid>
+                    </CheckBox>
                     <TextBlock Text="Delay (ms):" FontSize="14" VerticalAlignment="Center" Margin="5,0,5,0"/>
                     <TextBox x:Name="txtDelay" Width="40" Height="25" Text="0" FontSize="12" Padding="3"
                              Background="White" BorderBrush="Gray" BorderThickness="1" TextAlignment="Center"/>
