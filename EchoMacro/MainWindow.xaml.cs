@@ -6,20 +6,10 @@ using System.Windows.Input;
 
 namespace EchoMacro;
 
-public partial class MainWindow : Window, INotifyPropertyChanged
+public partial class MainWindow : Window
 {
-    private bool _isRecording;
-    public bool IsRecording
-    {
-        get => _isRecording;
-        set
-        {
-            _isRecording = value;
-            OnPropertyChanged();
-        }
-    }
-    private Recorder _recorder = new Recorder();
-    private Player _player = new Player();
+    public Recorder Recorder { get; set; } = new Recorder();
+    public Player Player { get; set; } = new Player();
     private TreeViewController? _fileHandler;
 
     public MainWindow()
@@ -31,7 +21,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         EnsureWindowOnTop();
         SetShortcutKeys();
-        _fileHandler = new TreeViewController(TreeViewMenu, _recorder);
+        _fileHandler = new TreeViewController(TreeViewMenu, Recorder);
         _fileHandler.LoadFileSuccessfully += () => TreeViewMenu.SaveRecord.IsEnabled = true;
     }
     private void EnsureWindowOnTop()
@@ -46,33 +36,39 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 this.Close();
 
             if (e.Key == Key.Space)
-                _player.StopPlayback();
+                Player.StopPlayback();
         };
     }
 
 
     private void ToggleRecording(object sender, RoutedEventArgs e)
     {
-        if (!IsRecording)
+        if (!Recorder.IsRecording)
         {
-            _recorder.StartRecording();
+            Recorder.StartRecording();
             TreeViewMenu.SaveRecord.IsEnabled = false;
         }
         else
         {
-            _recorder.StopRecording();
+            Recorder.StopRecording();
         }
-        IsRecording = !IsRecording;
     }
     private async void BtnPlay_Click(object sender, RoutedEventArgs e)
     {
         int delay = int.TryParse(txtDelay.Text, out var sec) ? sec : 0;
         bool repeat = chkRepeat.IsChecked ?? false;
-        List<RecordedAction> actions = _recorder.GetRecordedActions();
+        List<RecordedAction> actions = Recorder.GetRecordedActions();
         if (actions.Count == 0)
             return;
 
-        await _player.PlayActions(actions, delay, repeat);
+        if (!Player.IsPlaying)
+        {
+            await Player.PlayActions(actions, delay, repeat);
+        }
+        else
+        {
+            Player.StopPlayback();
+        }
     }
     private void MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {

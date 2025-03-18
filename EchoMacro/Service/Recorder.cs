@@ -3,14 +3,29 @@ using Gma.System.MouseKeyHook;
 using System.Windows.Forms;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using System.ComponentModel;
 
-public class Recorder
+namespace EchoMacro.Service;
+public class Recorder : INotifyPropertyChanged
 {
     public string Name { get; set; }
     private IKeyboardMouseEvents _globalHook;
     private List<RecordedAction> _recordedActions = new List<RecordedAction>();
     private Stopwatch _stopwatch;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
     private bool _isRecording;
+    public bool IsRecording
+    {
+        get => _isRecording;
+        set
+        {
+            _isRecording = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void OnPropertyChanged() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRecording)));
 
     public Recorder()
     {
@@ -19,14 +34,14 @@ public class Recorder
     }   
     public void StartRecording()
     {
-        if (_isRecording) return;
+        if (IsRecording) return;
         Init();
     }
     private void Init()
     {
         _recordedActions.Clear();
         _stopwatch.Restart();
-        _isRecording = true;
+        IsRecording = true;
         Name = "Recorded" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
         _globalHook = Hook.GlobalEvents();
@@ -36,21 +51,21 @@ public class Recorder
 
     public void StopRecording()
     {
-        if (!_isRecording) return;
+        if (!IsRecording) return;
 
         _globalHook.MouseDown -= OnMouseDown;
         _globalHook.KeyDown -= OnKeyDown;
         _globalHook.Dispose();
         _stopwatch.Stop();
 
-        _isRecording = false;
+        IsRecording = false;
         if (_recordedActions.Any())
             _recordedActions.RemoveAt(_recordedActions.Count - 1);
     }
 
     private void OnMouseDown(object sender, MouseEventArgs e)
     {
-        if (!_isRecording) return;
+        if (!IsRecording) return;
 
         _recordedActions.Add(new RecordedAction
         {
@@ -64,7 +79,7 @@ public class Recorder
 
     private void OnKeyDown(object sender, KeyEventArgs e)
     {
-       if (!_isRecording) return;
+       if (!IsRecording) return;
 
         Keys a = e.KeyCode;
         string keyName = e.KeyCode.ToString();

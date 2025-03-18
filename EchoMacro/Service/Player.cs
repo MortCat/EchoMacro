@@ -1,12 +1,26 @@
 ﻿using Gma.System.MouseKeyHook;
+using System.ComponentModel;
 using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Native;
 using static EchoMacro.Library.VirtualKey;
 
-public class Player
+namespace EchoMacro.Service;
+public class Player : INotifyPropertyChanged
 {
-    private bool _isPlaying { get; set; } = false;
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private bool _isPlaying = false;
+    public bool IsPlaying
+    {
+        get => _isPlaying;
+        set
+        {
+            _isPlaying = value;
+            OnPropertyChanged();
+        }
+    }
+    private void OnPropertyChanged() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPlaying)));
 
     private readonly InputSimulator _simulator;
     private readonly Dictionary<string, VirtualKeyCode> _virtualKeyMap = GetVirtualKeyMap();
@@ -29,7 +43,7 @@ public class Player
             //Take the first action as the base time.
             double baseTime = actions[0].Timestamp;
             double previousTime = baseTime;
-            _isPlaying = true;
+            IsPlaying = true;
 
             foreach (var action in actions)
             {
@@ -40,7 +54,7 @@ public class Player
                 if (delay > 0)
                     await Task.Delay(delay);
 
-                if (!_isPlaying)
+                if (!IsPlaying)
                     return;
 
                 ExecuteAction(action);
@@ -49,8 +63,9 @@ public class Player
             }
 
         } while (repeat);
+        IsPlaying = false;
     }
-    public void StopPlayback() => _isPlaying = false;
+    public void StopPlayback() => IsPlaying = false;
 
     private void ExecuteAction(RecordedAction action)
     {

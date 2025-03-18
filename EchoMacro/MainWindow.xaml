@@ -15,7 +15,7 @@
                 <Button x:Name="btnStart" Width="65" Height="35" Click="ToggleRecording"
                 Background="Gray" Foreground="White" FontSize="14" FontWeight="Bold"
                 BorderBrush="Transparent" Cursor="Hand"
-                DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
+                DataContext="{Binding Recorder, RelativeSource={RelativeSource AncestorType=Window}}">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Content" Value="🔴 Start"/>
@@ -28,9 +28,21 @@
                     </Button.Style>
                 </Button>
 
-                <Button x:Name="btnPlay" Content="▶ Play" Width="65" Height="35" Click="BtnPlay_Click"
+                <Button x:Name="btnPlay" Width="65" Height="35" Click="BtnPlay_Click"
                 Background="Gray" Foreground="White" FontSize="14" FontWeight="Bold"
-                BorderBrush="Transparent" Cursor="Hand" Margin="0,0,0,0"/>
+                BorderBrush="Transparent" Cursor="Hand" Margin="0,0,0,0"
+                DataContext="{Binding Player, RelativeSource={RelativeSource AncestorType=Window}}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="▶ Play"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                                    <Setter Property="Content" Value="⏹ Stop"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0">
                     <CheckBox x:Name="chkRepeat" VerticalAlignment="Center" Margin="0,3,0,0">
