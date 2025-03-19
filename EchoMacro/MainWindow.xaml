@@ -28,7 +28,7 @@
                     </Button.Style>
                 </Button>
 
-                <Button x:Name="btnPlay" Width="65" Height="35" Click="BtnPlay_Click"
+                <Button x:Name="btnPlay" Width="65" Height="35" Click= "BtnPlay_Click"
                 Background="Gray" Foreground="White" FontSize="14" FontWeight="Bold"
                 BorderBrush="Transparent" Cursor="Hand" Margin="0,0,0,0"
                 DataContext="{Binding Player, RelativeSource={RelativeSource AncestorType=Window}}">

@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 using Microsoft.Win32;
+using System.Windows.Input;
 
 namespace EchoMacro.Service
 {
@@ -10,16 +11,47 @@ namespace EchoMacro.Service
     {
         public event Action? LoadFileSuccessfully;
         private readonly Recorder _recorder;
+        private GlobalHotKeyManager? _hotKeyManager;
 
         public TreeViewController(FileTreeView_UserControl itemControl, Recorder recorder)
         {
             _recorder = recorder;
+            InitializeHotKeys();
             itemControl.OnLoadRecord += HandleLoadRecord;
             itemControl.OnSaveAsRecord += HandleSaveAsRecord;
             itemControl.OnSaveRecord += HandleSaveRecord;
             itemControl.OnMinimizeApp += HandleMinimizeApp;
             itemControl.OnCloseApp += HandleCloseApp;
         }
+        private void InitializeHotKeys()
+        {
+            if (Application.Current.MainWindow != null)
+            {
+                SetupHotKeys();
+            }
+            else
+            {
+                Application.Current.Activated += OnApplicationActivated;
+            }
+            Application.Current.Dispatcher.InvokeAsync(SetupHotKeys);
+        }
+        private void SetupHotKeys()
+        {
+            if (Application.Current.MainWindow is Window mainWindow)
+            {
+                _hotKeyManager = new GlobalHotKeyManager(mainWindow);
+                RegisterHotKeys();
+            }
+        }
+        private void OnApplicationActivated(object? sender, EventArgs e)
+        {
+            if (Application.Current.MainWindow != null)
+            {
+                Application.Current.Activated -= OnApplicationActivated;
+                SetupHotKeys();
+            }
+        }
+        private void RegisterHotKeys() => _hotKeyManager?.RegisterHotKey(9002, Key.Escape, HandleCloseApp);
         private void NotifyFileLoadSuccess() => LoadFileSuccessfully?.Invoke();
 
         private void HandleLoadRecord()
@@ -86,5 +118,7 @@ namespace EchoMacro.Service
         }
         private void HandleMinimizeApp() => Application.Current.MainWindow.WindowState = WindowState.Minimized;
         private void HandleCloseApp() => Application.Current.Shutdown();
+
+        public void Dispose() => _hotKeyManager?.Dispose();
     }
 }
