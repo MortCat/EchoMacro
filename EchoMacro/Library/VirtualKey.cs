@@ -12,9 +12,9 @@ namespace EchoMacro.Library
                 .ToDictionary(vk => vk.ToString().Replace("VK_", ""), vk => vk);
 
             var additionalMappings = new Dictionary<string, VirtualKeyCode>
-        {
+                {
             { "SPACE", VirtualKeyCode.SPACE },
-            { "ENTER", VirtualKeyCode.RETURN },
+            { "Enter", VirtualKeyCode.RETURN },
             { "ESC", VirtualKeyCode.ESCAPE },
             { "TAB", VirtualKeyCode.TAB },
             { "Back", VirtualKeyCode.BACK },
@@ -117,6 +117,7 @@ namespace EchoMacro.Library
             { "LaunchApplication1", VirtualKeyCode.LAUNCH_APP1 },
             { "LaunchApplication2", VirtualKeyCode.LAUNCH_APP2 }
         };
+
 
             foreach (var item in additionalMappings)
             {

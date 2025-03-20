@@ -8,10 +8,12 @@ namespace EchoMacro
 {
     public partial class MainWindow : Window
     {
-        public Recorder Recorder { get; set; } = new Recorder();
-        public Player Player { get; set; } = new Player();
         private TreeViewController? _fileHandler;
         private GlobalHotKeyManager? _hotKeyManager;
+
+        public Recorder Recorder { get; } = new Recorder();
+        public Player Player { get; } = new Player();
+
 
         public MainWindow()
         {
@@ -20,15 +22,14 @@ namespace EchoMacro
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-            Process();
+            InitializeApplication();
         }
 
-        private void Process()
+        private void InitializeApplication()
         {
             EnsureWindowOnTop();
             RegisterHotKeys();
-            _fileHandler = new TreeViewController(TreeViewMenu, Recorder);
-            _fileHandler.LoadFileSuccessfully += () => TreeViewMenu.SaveRecord.IsEnabled = true;
+            InitializeFileHandler();
         }
         private void EnsureWindowOnTop()
         {
@@ -39,17 +40,20 @@ namespace EchoMacro
         {
             _hotKeyManager = new GlobalHotKeyManager(this);
             _hotKeyManager.RegisterHotKey(9000, Key.Escape, () => this.Close());
-            _hotKeyManager.RegisterHotKey(9001, Key.Space, async () => await TogglePlayback());//Player.StopPlayback());
-                                                                                               //this.KeyDown += (sender, e) => {
-                                                                                               //    if (e.Key == Key.Escape)
-                                                                                               //        this.Close();
-
-            //    if (e.Key == Key.Space)
-            //        Player.StopPlayback();
-            //};
+            _hotKeyManager.RegisterHotKey(9001, Key.Space, async () => await TogglePlayback());
+        }
+        private void InitializeFileHandler()
+        {
+            _fileHandler = new TreeViewController(TreeViewMenu, Recorder);
+            _fileHandler.LoadFileSuccessfully += () => TreeViewMenu.SaveRecord.IsEnabled = true;
         }
 
 
+        private void MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+                DragMove();
+        }
         private void ToggleRecording(object sender, RoutedEventArgs e)
         {
             if (!Recorder.IsRecording)
@@ -81,28 +85,17 @@ namespace EchoMacro
                 }
             }
         }
-        private void MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ButtonState == MouseButtonState.Pressed)
-                DragMove();
-        }
+
         private void Border_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             Point position = e.GetPosition(this);
             TreeViewMenu.Show(position);
         }
-
         protected override void OnClosed(EventArgs e)
         {
             _hotKeyManager?.Dispose();
             _fileHandler?.Dispose();
             base.OnClosed(e);
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
