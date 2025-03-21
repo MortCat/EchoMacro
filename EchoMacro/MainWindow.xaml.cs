@@ -59,11 +59,13 @@ namespace EchoMacro
             if (!Recorder.IsRecording)
             {
                 Recorder.StartRecording();
+                btnPlay.IsEnabled = false;
                 TreeViewMenu.SaveRecord.IsEnabled = false;
             }
             else
             {
                 Recorder.StopRecording();
+                btnPlay.IsEnabled = true;
             }
         }
         private async void BtnPlay_Click(object sender, RoutedEventArgs e) => await TogglePlayback();
