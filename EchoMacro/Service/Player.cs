@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Native;
@@ -82,7 +83,8 @@ namespace EchoMacro.Service
         }
         private void MouseClickHandler(RecordedAction act)
         {
-            MoveMouseSmoothly(act.X, act.Y);
+            //MoveMouseSmoothly(act.X, act.Y);
+            MoveMouseSmoothlyWithErrorCompensation(act.X, act.Y);
 
             Thread.Sleep(5);
             if (act.IsRightClick)
@@ -98,7 +100,17 @@ namespace EchoMacro.Service
         {
             if (Enum.TryParse(act.Key, out VirtualKeyCode keyCode) || TryGetKeyCodeParse(act.Key, out keyCode))
             {
-                _simulator.Keyboard.KeyPress(keyCode);
+                if(globalDelay == 0)
+                {
+                    _simulator.Keyboard.KeyPress(keyCode);
+                }
+                else
+                {
+                    Random rand = new Random();
+                    _simulator.Keyboard.KeyDown(keyCode); //Simulate human-like performance
+                    Thread.Sleep(rand.Next(50, 80));
+                    _simulator.Keyboard.KeyUp(keyCode);
+                }
             }
         }
 
@@ -124,8 +136,8 @@ namespace EchoMacro.Service
                 double t = (double)i / steps;
                 t = t * t * (3 - 2 * t); //Ease-in-Ease-out
 
-                int newX = (int)(startX + t * (targetX - startX) + rand.Next(-2, 2)); //Simulate human-like performance
-                int newY = (int)(startY + t * (targetY - startY) + rand.Next(-2, 2));
+                int newX = (int)(startX + t * (targetX - startX) + rand.Next(-3, 4)); //Simulate human-like performance
+                int newY = (int)(startY + t * (targetY - startY) + rand.Next(-3, 4));
 
                 Cursor.Position = new System.Drawing.Point(newX, newY);
                 int minDelay = globalDelay == 0 ? 0 : 1;
@@ -134,6 +146,65 @@ namespace EchoMacro.Service
             }
 
             Cursor.Position = new System.Drawing.Point(targetX, targetY); //Final position.
+
+            //Pending Refactor
+            if (globalDelay != 0)
+                Thread.Sleep(rand.Next(5, 20)); //Add random delay
+
+        }
+
+        /// <summary>Simulates human-like mouse movement with potential error and correction.</summary>
+        private async Task MoveMouseSmoothlyWithErrorCompensation(int targetX, int targetY)
+        {
+            Random rand = new Random();
+
+            //Error rate (e.g., 15% probability)
+            bool simulateMistake = rand.NextDouble() < 0.15;
+            int actualX = targetX;
+            int actualY = targetY;
+
+            if (simulateMistake)
+            {
+                actualX += rand.Next(-20, 21); // Intentionally offset to the wrong position
+                actualY += rand.Next(-20, 21);
+                await MoveMouseSmoothlyCurve(actualX, actualY, globalDelay);
+                Thread.Sleep(rand.Next(80, 150)); // Pause before correcting
+            }
+
+            await MoveMouseSmoothlyCurve(targetX, targetY, globalDelay); //Real target position
+            Thread.Sleep(rand.Next(10, 30));
+        }
+
+        private async Task MoveMouseSmoothlyCurve(int targetX, int targetY, int globalDelay)
+        {
+            int startX = Cursor.Position.X;
+            int startY = Cursor.Position.Y;
+            int steps = globalDelay == 0 ? 80 : 150;
+            Random rand = new Random();
+
+            // Bezier Curve
+            Point p0 = new(startX, startY);
+            Point p2 = new(targetX, targetY);
+            Point p1 = new(
+                (p0.X + p2.X) / 2 + rand.Next(-100, 100),
+                (p0.Y + p2.Y) / 2 + rand.Next(-100, 100)
+            );
+
+            for (double t = 0; t <= 1.0; t += 1.0 / steps)
+            {
+                double oneMinusT = 1 - t;
+
+                // Quadratic Bezier Curve
+                int newX = (int)(oneMinusT * oneMinusT * p0.X + 2 * oneMinusT * t * p1.X + t * t * p2.X);
+                int newY = (int)(oneMinusT * oneMinusT * p0.Y + 2 * oneMinusT * t * p1.Y + t * t * p2.Y);
+
+                Cursor.Position = new Point(newX, newY);
+                int minDelay = globalDelay == 0 ? 1 : 2;
+                int maxDelay = globalDelay == 0 ? 3 : globalDelay;
+                Thread.Sleep(rand.Next(minDelay, maxDelay));
+            }
+
+            Cursor.Position = new Point(targetX, targetY);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
