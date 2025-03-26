@@ -8,8 +8,6 @@ namespace EchoMacro.Service
 {
     public class Player : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private bool _isPlaying = false;
         public bool IsPlaying
         {
@@ -20,8 +18,8 @@ namespace EchoMacro.Service
                 OnPropertyChanged();
             }
         }
-        private void OnPropertyChanged() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPlaying)));
 
+        private int globalDelay = 0;
         private readonly InputSimulator _simulator;
         private readonly Dictionary<string, VirtualKeyCode> _virtualKeyMap = GetVirtualKeyMap();
 
@@ -32,6 +30,7 @@ namespace EchoMacro.Service
 
         public async Task PlayActions(List<RecordedAction> actions, int delay = 0, bool repeat = false)
         {
+            globalDelay = delay;
             if (actions == null || actions.Count == 0)
             {
                 Console.WriteLine("No Action.");
@@ -111,13 +110,13 @@ namespace EchoMacro.Service
 
             return true;
         }
-        private void MoveMouseSmoothly(int targetX, int targetY)
+        private async Task MoveMouseSmoothly(int targetX, int targetY)
         {
             int startX = Cursor.Position.X;
             int startY = Cursor.Position.Y;
 
             //Add steps to make the movement smoother.
-            int steps = 150;
+            int steps = globalDelay == 0 ? 80 : 150;
             Random rand = new Random();
 
             for (int i = 1; i <= steps; i++)
@@ -129,10 +128,15 @@ namespace EchoMacro.Service
                 int newY = (int)(startY + t * (targetY - startY) + rand.Next(-2, 2));
 
                 Cursor.Position = new System.Drawing.Point(newX, newY);
-                Thread.Sleep(rand.Next(0, 2)); //Add random delay
+                int minDelay = globalDelay == 0 ? 0 : 1;
+                int maxDelay = globalDelay == 0 ? 2 : globalDelay;
+                Thread.Sleep(rand.Next(minDelay, maxDelay)); //Add random delay
             }
 
             Cursor.Position = new System.Drawing.Point(targetX, targetY); //Final position.
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPlaying)));
     }
 }
