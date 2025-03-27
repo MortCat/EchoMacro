@@ -154,7 +154,7 @@ namespace EchoMacro.Service
         }
 
         /// <summary>Simulates human-like mouse movement with potential error and correction.</summary>
-        private async Task MoveMouseSmoothlyWithErrorCompensation(int targetX, int targetY)
+        private void MoveMouseSmoothlyWithErrorCompensation(int targetX, int targetY)
         {
             Random rand = new Random();
 
@@ -167,15 +167,15 @@ namespace EchoMacro.Service
             {
                 actualX += rand.Next(-20, 21); // Intentionally offset to the wrong position
                 actualY += rand.Next(-20, 21);
-                await MoveMouseSmoothlyCurve(actualX, actualY, globalDelay);
+                MoveMouseSmoothlyCurve(actualX, actualY, globalDelay);
                 Thread.Sleep(rand.Next(80, 150)); // Pause before correcting
             }
 
-            await MoveMouseSmoothlyCurve(targetX, targetY, globalDelay); //Real target position
+            MoveMouseSmoothlyCurve(targetX, targetY, globalDelay); //Real target position
             Thread.Sleep(rand.Next(10, 30));
         }
 
-        private async Task MoveMouseSmoothlyCurve(int targetX, int targetY, int globalDelay)
+        private void MoveMouseSmoothlyCurve(int targetX, int targetY, int globalDelay)
         {
             int startX = Cursor.Position.X;
             int startY = Cursor.Position.Y;
@@ -199,7 +199,7 @@ namespace EchoMacro.Service
                 int newY = (int)(oneMinusT * oneMinusT * p0.Y + 2 * oneMinusT * t * p1.Y + t * t * p2.Y);
 
                 Cursor.Position = new Point(newX, newY);
-                int minDelay = globalDelay == 0 ? 1 : 2;
+                int minDelay = globalDelay == 0 ? globalDelay : 1;
                 int maxDelay = globalDelay == 0 ? 3 : globalDelay;
                 Thread.Sleep(rand.Next(minDelay, maxDelay));
             }
