@@ -122,36 +122,36 @@ namespace EchoMacro.Service
 
             return true;
         }
-        private async Task MoveMouseSmoothly(int targetX, int targetY)
-        {
-            int startX = Cursor.Position.X;
-            int startY = Cursor.Position.Y;
+        //private async Task MoveMouseSmoothly(int targetX, int targetY)
+        //{
+        //    int startX = Cursor.Position.X;
+        //    int startY = Cursor.Position.Y;
 
-            //Add steps to make the movement smoother.
-            int steps = globalDelay == 0 ? 80 : 150;
-            Random rand = new Random();
+        //    //Add steps to make the movement smoother.
+        //    int steps = globalDelay == 0 ? 80 : 150;
+        //    Random rand = new Random();
 
-            for (int i = 1; i <= steps; i++)
-            {
-                double t = (double)i / steps;
-                t = t * t * (3 - 2 * t); //Ease-in-Ease-out
+        //    for (int i = 1; i <= steps; i++)
+        //    {
+        //        double t = (double)i / steps;
+        //        t = t * t * (3 - 2 * t); //Ease-in-Ease-out
 
-                int newX = (int)(startX + t * (targetX - startX) + rand.Next(-3, 4)); //Simulate human-like performance
-                int newY = (int)(startY + t * (targetY - startY) + rand.Next(-3, 4));
+        //        int newX = (int)(startX + t * (targetX - startX) + rand.Next(-3, 4)); //Simulate human-like performance
+        //        int newY = (int)(startY + t * (targetY - startY) + rand.Next(-3, 4));
 
-                Cursor.Position = new System.Drawing.Point(newX, newY);
-                int minDelay = globalDelay == 0 ? 0 : 1;
-                int maxDelay = globalDelay == 0 ? 2 : globalDelay;
-                Thread.Sleep(rand.Next(minDelay, maxDelay)); //Add random delay
-            }
+        //        Cursor.Position = new System.Drawing.Point(newX, newY);
+        //        int minDelay = globalDelay == 0 ? 0 : 1;
+        //        int maxDelay = globalDelay == 0 ? 2 : globalDelay;
+        //        Thread.Sleep(rand.Next(minDelay, maxDelay)); //Add random delay
+        //    }
 
-            Cursor.Position = new System.Drawing.Point(targetX, targetY); //Final position.
+        //    Cursor.Position = new System.Drawing.Point(targetX, targetY); //Final position.
 
-            //Pending Refactor
-            if (globalDelay != 0)
-                Thread.Sleep(rand.Next(5, 20)); //Add random delay
+        //    //Pending Refactor
+        //    if (globalDelay != 0)
+        //        Thread.Sleep(rand.Next(5, 20)); //Add random delay
 
-        }
+        //}
 
         /// <summary>Simulates human-like mouse movement with potential error and correction.</summary>
         private void MoveMouseSmoothlyWithErrorCompensation(int targetX, int targetY)

@@ -8,7 +8,7 @@
         public double Timestamp { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
-        public string Key { get; set; }
+        public string Key { get; set; } = string.Empty;
         public bool IsRightClick { get; set; }
     }
 }

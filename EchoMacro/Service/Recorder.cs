@@ -9,8 +9,8 @@ namespace EchoMacro.Service
 {
     public class Recorder : INotifyPropertyChanged
     {
-        public string Name { get; set; }
-        private IKeyboardMouseEvents _globalHook;
+        public string Name { get; set; } = string.Empty;
+        private IKeyboardMouseEvents? _globalHook;
         private List<RecordedAction> _recordedActions = new List<RecordedAction>();
         private Stopwatch _stopwatch;
 
