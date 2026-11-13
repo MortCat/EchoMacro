@@ -67,7 +67,7 @@ namespace EchoMacro.Service
         /// <summary>Stop playback when the user keeps moving the real mouse.</summary>
         public bool AutoStopOnMouseMove { get; set; } = true;
         /// <summary>How long the movement has to last, so that a bumped mouse does not interrupt playback.</summary>
-        public double AutoStopSeconds { get; set; } = 2;
+        public double AutoStopSeconds { get; set; } = 0.2;
 
         [JsonIgnore]
         public string EffectiveRecordingsFolder =>
