@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="docs/images/icon.png" width="96" alt="EchoMacro icon">
-</p>
-
 <h1 align="center">EchoMacro</h1>
 
 <p align="center">
