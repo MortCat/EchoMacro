@@ -18,6 +18,7 @@ namespace EchoMacro.Service
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
         private const int WM_HOTKEY = 0x0312;
+        private const uint MOD_NOREPEAT = 0x4000;
 
         public GlobalHotKeyManager(Window window)
         {
@@ -26,15 +27,19 @@ namespace EchoMacro.Service
             _source.AddHook(WndProc);
         }
 
-        public void RegisterHotKey(int id, Key key, Action callback)
+        /// <summary>Registers a system-wide hotkey. Returns false when another application already owns it.</summary>
+        public bool RegisterHotKey(int id, ModifierKeys modifiers, Key key, Action callback)
         {
-            if (_hotKeyActions.ContainsKey(id)) return;
+            if (_hotKeyActions.ContainsKey(id)) return false;
 
+            //ModifierKeys uses the same bit values as the Win32 MOD_* flags.
+            uint fsModifiers = (uint)modifiers | MOD_NOREPEAT;
             uint vk = (uint)KeyInterop.VirtualKeyFromKey(key);
-            if (RegisterHotKey(_windowHandle, id, 0, vk))
-            {
-                _hotKeyActions[id] = callback;
-            }
+            if (!RegisterHotKey(_windowHandle, id, fsModifiers, vk))
+                return false;
+
+            _hotKeyActions[id] = callback;
+            return true;
         }
 
         public void UnregisterHotKey(int id)

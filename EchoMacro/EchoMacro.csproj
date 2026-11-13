@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -6,15 +6,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>YellowMan.ico</ApplicationIcon>
+    <ApplicationIcon>EchoMacro.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="YellowMan.ico" />
+    <Content Include="EchoMacro.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="InputSimulator" Version="1.0.4" />
     <PackageReference Include="MouseKeyHook" Version="5.7.1" />
   </ItemGroup>
 

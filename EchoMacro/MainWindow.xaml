@@ -2,65 +2,122 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="clr-namespace:EchoMacro.View"
-        
-        Title="EchoPlayer" Height="59" Width="340"
-        WindowStyle="None" 
-        WindowStartupLocation="CenterScreen" Background="Transparent" ResizeMode="CanResize"
-        AllowsTransparency="True" >
 
+        Title="EchoMacro" Width="312" SizeToContent="Height"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="{StaticResource IosFont}" TextOptions.TextFormattingMode="Display">
 
-    <Border Background="White" CornerRadius="15" Padding="0" BorderBrush="#DDD" BorderThickness="1" Grid.ColumnSpan="2" ClipToBounds="True" Margin="0,0,0,24" MouseLeftButtonDown="MouseLeftButtonDown" MouseRightButtonDown="Border_MouseRightButtonDown">
-        <Grid Margin="0,-1,0,0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"> 
-                <Button x:Name="btnStart" Width="65" Height="35" Click="ToggleRecording"
-                Background="Gray" Foreground="White" FontSize="14" FontWeight="Bold"
-                BorderBrush="Transparent" Cursor="Hand"
-                DataContext="{Binding Recorder, RelativeSource={RelativeSource AncestorType=Window}}">
+    <!-- The margin leaves room for the shadow; the window itself is transparent. The window is as wide as
+         the expanded toolbar, so the toolbar can grow to the right without the window resizing. -->
+    <Border x:Name="Toolbar" Margin="16" Padding="8,7" CornerRadius="25" HorizontalAlignment="Left"
+            MouseEnter="Toolbar_MouseEnter" MouseLeave="Toolbar_MouseLeave"
+            Background="#FAFFFFFF" BorderBrush="{StaticResource IosHairline}" BorderThickness="1"
+            MouseLeftButtonDown="Border_MouseLeftButtonDown" MouseRightButtonDown="Border_MouseRightButtonDown">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="4" Direction="270" Opacity="0.22"/>
+        </Border.Effect>
+
+        <Grid>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                <!-- Record: red dot; while recording, a white stop square on red. -->
+                <Button x:Name="btnStart" Click="BtnStart_Click"
+                        DataContext="{Binding Recorder, RelativeSource={RelativeSource AncestorType=Window}}">
                     <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Content" Value="🔴 Start"/>
+                        <Style TargetType="Button" BasedOn="{StaticResource IosCircleButton}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsRecording}" Value="True">
-                                    <Setter Property="Content" Value="⏹ Stop"/>
+                                    <Setter Property="Background" Value="{StaticResource IosRed}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
+                    <Grid>
+                        <Ellipse Width="15" Height="15" Fill="{StaticResource IosRed}">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsRecording}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <Rectangle Width="12" Height="12" RadiusX="3" RadiusY="3" Fill="White">
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsRecording}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                    </Grid>
                 </Button>
 
-                <Button x:Name="btnPlay" Width="65" Height="35" Click= "BtnPlay_Click"
-                Background="Gray" Foreground="White" FontSize="14" FontWeight="Bold"
-                BorderBrush="Transparent" Cursor="Hand" Margin="0,0,0,0"
-                DataContext="{Binding Player, RelativeSource={RelativeSource AncestorType=Window}}">
+                <!-- Play: blue triangle; while playing, a white stop square on blue. -->
+                <Button x:Name="btnPlay" Click="BtnPlay_Click" Margin="6,0,0,0" ToolTipService.ShowOnDisabled="True"
+                        DataContext="{Binding Player, RelativeSource={RelativeSource AncestorType=Window}}">
                     <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Content" Value="▶ Play"/>
+                        <Style TargetType="Button" BasedOn="{StaticResource IosCircleButton}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsPlaying}" Value="True">
-                                    <Setter Property="Content" Value="⏹ Stop"/>
+                                    <Setter Property="Background" Value="{StaticResource IosBlue}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
+                    <Grid>
+                        <Path Data="M0,0 L12,7 L0,14 Z" Fill="{StaticResource IosBlue}" Margin="3,0,0,0">
+                            <Path.Style>
+                                <Style TargetType="Path">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Path.Style>
+                        </Path>
+                        <Rectangle Width="12" Height="12" RadiusX="3" RadiusY="3" Fill="White">
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                    </Grid>
                 </Button>
 
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0">
-                    <CheckBox x:Name="chkRepeat" VerticalAlignment="Center" Margin="0,3,0,0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="1" Text="🔁" FontSize="16" VerticalAlignment="Center" Margin="0,-2,0,0"/>
-                        </Grid>
-                    </CheckBox>
-                    <TextBlock Text="Delay (ms):" FontSize="14" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                    <TextBox x:Name="txtDelay" Width="40" Height="25" Text="0" FontSize="12" Padding="3"
-                             Background="White" BorderBrush="Gray" BorderThickness="1" TextAlignment="Center"/>
-                </StackPanel>
+                <ToggleButton x:Name="chkRepeat" Style="{StaticResource IosIconToggle}" Content="&#xE8EE;"
+                              Margin="6,0,0,0" ToolTip="Repeat" MouseEnter="ChkRepeat_MouseEnter"/>
+
+                <!-- Slides out to the right while the pointer is on the repeat icon; see MainWindow.xaml.cs.
+                     The content keeps its full width and is clipped, so it is revealed rather than squeezed. -->
+                <Border x:Name="DelayPanel" Width="0" ClipToBounds="True">
+                    <StackPanel Orientation="Horizontal" Width="140" HorizontalAlignment="Left">
+                        <Border Width="1" Height="20" Margin="8,0,10,0" Background="{StaticResource IosSeparator}"/>
+
+                        <TextBlock Text="Delay" FontSize="12.5" Foreground="{StaticResource IosSecondaryLabel}" VerticalAlignment="Center"/>
+                        <TextBox x:Name="txtDelay" Style="{StaticResource IosTextBox}" Width="50" Height="28" Text="0"
+                                 MaxLength="5" Margin="7,0,5,0" ToolTip="Extra wait before every action, in milliseconds"
+                                 LostKeyboardFocus="TxtDelay_LostKeyboardFocus"/>
+                        <TextBlock Text="ms" FontSize="12.5" Foreground="{StaticResource IosSecondaryLabel}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
             </StackPanel>
 
-            <views:FileTreeView_UserControl x:Name="TreeViewMenu"/>
+            <views:FileTreeView_UserControl x:Name="TreeViewMenu" Width="0" Height="0"/>
         </Grid>
     </Border>
 </Window>

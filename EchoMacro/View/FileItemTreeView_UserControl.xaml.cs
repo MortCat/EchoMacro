@@ -8,6 +8,7 @@ namespace EchoMacro.View
         public event Action? OnLoadRecord;
         public event Action? OnSaveAsRecord;
         public event Action? OnSaveRecord;
+        public event Action? OnOpenSettings;
         public event Action? OnMinimizeApp;
         public event Action? OnCloseApp;
         public FileTreeView_UserControl()
@@ -25,6 +26,7 @@ namespace EchoMacro.View
         private void LoadRecord_Click(object sender, RoutedEventArgs e) => OnLoadRecord?.Invoke();
         private void SaveAsRecord_Click(object sender, RoutedEventArgs e) => OnSaveAsRecord?.Invoke();
         private void SaveRecord_Click(object sender, RoutedEventArgs e) => OnSaveRecord?.Invoke();
+        private void Settings_Click(object sender, RoutedEventArgs e) => OnOpenSettings?.Invoke();
         private void Minimize_Click(object sender, RoutedEventArgs e) => OnMinimizeApp?.Invoke();
         private void Close_Click(object sender, RoutedEventArgs e) => OnCloseApp?.Invoke();
     }
